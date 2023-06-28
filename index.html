@@ -1,0 +1,272 @@
+<!--
+
+CHECKLIST FOR 2.18:
+
+--gravity force based on size    DONE (kinda)
+--correct the title    DONE
+--add a credit/starting page    DONE
+--add missing pieces in custom console    DONE (kinda)
+
+
+NOTES -------------------------
+
+--add a update download thing?
+
+--find a way to use local/session storage yayy i did it!
+
+--i wanna create a checklist extension (hehe im doing it)
+
+
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Sharty Farty 2.18</title>
+<style>
+canvas {
+  position:absolute;
+  top:0px;
+  left:0px;
+}
+#cons {
+  position:absolute;
+  z-index:1;
+  top:-100px;
+}
+#cons:focus {
+  top:0px;
+  left:0px;
+}
+.ui::backdrop {
+  background:rgba(0,0,0,0.8);
+}
+.ui {
+  background:#eee;
+  font-family:verdana;
+  outline:none;
+  border:none;
+  overflow:hidden;
+}
+#tab {
+  width:100%;
+  display:flex;
+  justify-content:center
+}
+.tabbutton {
+  float:left;
+  padding-top:10px;
+  padding-bottom:10px;
+  padding-left:10%;
+  padding-right:10%;
+  padding:auto;
+  border:none;
+  outline:none;
+  background:#eee;
+}
+.active {
+  background:#ccc;
+}
+.center {text-align:center;}
+.tabin {
+  width:calc(104% - 1px);
+  height:250px;
+  background:#ccc;
+  position:relative;
+  left:-5px;
+  display:none;
+}
+.tabout {
+  display:block;
+}
+.buttont {
+  border:none;
+  background:dodgerblue;
+  color:white;
+}
+#back {
+  position:absolute;
+  top:0px;
+  cursor:pointer;
+}
+#cr {
+  position:absolute;
+  right:-3px;
+  top:-5px;
+  cursor:pointer;
+}
+</style>
+</head>
+<body>
+<dialog class="ui" id="st">
+<div onclick="clb()" id="cr">
+<svg xmlns="http://www.w3.org/2000/svg" height="1.5em" viewBox="0 0 448 512"><path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zm79 143c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z" fill="#ff0000" /></svg>
+</div>
+  <h1 class="center">
+  Welcome To Ball Sim
+  </h1>
+  <p class="center">
+  v2.18
+  </p>
+  <br>
+  <br>
+  <h3 class="center">
+  By: TheFax<br><br>Email: qwertyfax111@gmail.com
+  </h3>
+  <br><br>
+  <h4 class="center">
+  Press ctrl+O to acess the console<br>and Have Fun!
+  </h4>
+  <br><br><div class="center">
+  <label>Dont Show Again&nbsp;<input id="dsa" type="checkbox"></label></div>
+</dialog>
+<dialog class="ui" id="ui">
+<p id="back">&lt;-- Back</p>
+  <h1>
+  Custom Console
+  </h1>
+  <div id="tab">
+  <button onclick="swto(event,'cursor')" class="tabbutton active">
+  Cursor
+  </button>
+  <button onclick="swto(event,'balls')" class="tabbutton">
+  Balls
+  </button>
+  <button onclick="swto(event,'advanced')" class="tabbutton">
+  Advanced
+  </button>
+  </div>
+  
+  <!-- Things -->
+  
+  <div class="tabin tabout" id="cursor">
+  <br>
+  <h4 class="center">
+  Cursor effect radius
+  </h4>
+  <div class="center">
+  <input class="buttont" value="100" id="scal" type="range" min="5" max="200" oninput="document.querySelector('#num').value = event.currentTarget.value;dist=parseFloat(event.currentTarget.value);"><input class="buttont" value="100" type="number" id="num" style="width:40px;" oninput="document.querySelector('#scal').value = event.currentTarget.value;dist=parseFloat(event.currentTarget.value);">
+  </div>
+  </div>
+  
+  <div class="tabin" id="balls">
+  <br>
+  <h4 class="center">
+  Respawn balls
+  </h4>
+  <div class="center">
+  <button onclick="a(parseFloat(document.querySelector('#dens').value))" class="buttont" style="cursor:pointer;">
+  Respawn balls
+  </button><br>
+  <label>
+    Density:&nbsp;<input id="dens" class="buttont" type="number" style="width:40px;" value="0.6">
+  </label>
+  </div>
+  <h4 class="center">
+  Gravity
+  </h4>
+  <div class="center">
+  <label>
+    Gravity:&nbsp;<input type="checkbox" oninput="grav=event.currentTarget.checked">
+  </label>
+  <br><label>Force:&nbsp;<input oninput="force=parseFloat(event.currentTarget.value)" class="buttont" type="number" style="width:40px;" value="0.9"></label>
+  </div>
+  </div>
+  
+  <div class="tabin" id="advanced">
+  <br>
+  <h4 class="center">
+  For each ball do
+  </h4>
+  <div class="center">
+  <textarea id="cod" style="resize:none;width:90%;height:70px;">//variable e is ball properties
+e.c = "#00ff00"</textarea><br>
+  <button onclick="try{each(e=>{eval(document.querySelector('#cod').value)})} catch(err){console.log(err)}" class="buttont" style="cursor:pointer;">
+  Run code
+  </button>
+  <br><br>
+  <label>Sub-Steps:&nbsp;<input class="buttont" value="10" type="number" id="sub" oninput="sub=parseFloat(event.currentTarget.value)" style="width:40px;"></label>
+  </div>
+  </div>
+  
+</dialog>
+<canvas width="100" height="100"></canvas>
+<input id="cons">
+<script name="other-ui-handler">
+//window.sessionStorage.sha = "true";
+
+var open = false;
+
+var mod = document.querySelector("#st");
+if (window.sessionStorage.sha=="true") {
+show();
+}
+function clb() {
+open = false;
+if (document.querySelector("#dsa").checked) {
+window.sessionStorage.sha = false;
+} else {
+window.sessionStorage.sha = true;
+}
+mod.close();
+}
+function show() {
+open=true;
+mod.showModal();
+go=false;
+}
+</script>
+<script name="ui-handler">
+var dia = document.querySelector("#ui");
+
+var SETT_KEY = "KeyO";
+
+function swto(ev,name) {
+
+let tabindex;
+let taboo = document.querySelectorAll(".tabin");
+for (let i = 0; i<taboo.length;i++) {
+taboo[i].className = taboo[i].className.replace(" tabout","");
+}
+
+let butto = document.querySelectorAll(".tabbutton");
+for (let i = 0; i < butto.length;i++) {
+butto[i].className = butto[i].className.replace(" active","");
+}
+ev.currentTarget.className+=" active";
+document.querySelector(`#${name}`).className+=" tabout";
+
+}
+
+document.querySelector("#back").addEventListener("click",function(e) {
+dia.close();
+go=true;
+})
+document.addEventListener("keydown",function(e) {
+if (e.which==27) {
+go=true;
+}
+if (e.ctrlKey&&e.code==SETT_KEY) {
+e.preventDefault();
+if (dia.open&&!open) {
+dia.close();
+go=true;
+} else if (!open) {
+dia.showModal();
+go=false;
+}
+}
+})
+</script>
+<script name="ball-haha">
+var inp=document.querySelector("#cons");inp.addEventListener("keydown",function(e){if(13==e.which){try{inp.value=eval(inp.value);inp.value=""}catch(a){inp.value=a;inp.select()}}});
+</script>
+<script>
+var go = true;
+const canvas=document.querySelector("canvas");if(canvas.getContext){function a(a){amo=Math.floor(bound[0]*bound[1]/g*a),hehe=[];for(let b=0;b<amo;b++)hehe.push(new h(Math.random()*bound[0],Math.random()*bound[1],20*Math.random()+10,hehe,`rgb(${255*Math.random()},${255*Math.random()},${255*Math.random()})`))}function b(a,b){let c=hehe[a],e=hehe[b],f=c.to(e.x,e.y),d=f-c.r-e.r;return d=!!(0>d)&&0-d,d}function c(a,b){let c=hehe[a],e=hehe[b],f=[e.x-c.x,c.y-e.y];return[0-f[0]/(Math.abs(f[0])+Math.abs(f[1])),f[1]/(Math.abs(f[0])+Math.abs(f[1]))]}function d(a,b,c){let e=hehe[a],f={x:b,y:c},g=[f.x-e.x,e.y-f.y];return[0-g[0]/(Math.abs(g[0])+Math.abs(g[1])),g[1]/(Math.abs(g[0])+Math.abs(g[1]))]}function e(){f.clearRect(0,0,bound[0],bound[1]),(window.visualViewport.width!=bound[0]||window.visualViewport.height!=bound[1])&&(bound=[window.visualViewport.width,window.visualViewport.height],canvas.width=bound[0],canvas.height=bound[1],a(default_density));if(go){for(let a=0;a<sub;a++)for(let a=0;a<hehe.length;a++)hehe[a].check(hehe);}for(let a=0;a<hehe.length;a++)hehe[a].draw(f);window.requestAnimationFrame(e)}const f=canvas.getContext("2d");var grav=!1,force=.9,hehe=[],pause=!1,sub=10,dist=100,default_density=.6;const g=1400;function each(func) {
+                    hehe.forEach(function(e) {
+                        func(e)
+                    });
+                }canvas.setAttribute("width",window.visualViewport.width),canvas.setAttribute("height",window.visualViewport.height);var amo,bound=[canvas.width,canvas.height],m=[0,0];canvas.addEventListener("mousemove",function(a){m=[a.clientX,a.clientY]});class h{constructor(a,b,c,d,e){this.x=a,this.y=b,this.r=c,this.i=d.length,this.c=e,this.still=!1}draw(a){a.fillStyle=this.c,a.beginPath(),a.arc(this.x,this.y,this.r,0,2*Math.PI),a.fill()}set(a,b){this.x=a,this.y=b}to(a,b){let c=a-this.x,d=b-this.y;return Math.sqrt(c**2+d**2)}check(a){grav&&(this.y+=(force/sub)*this.r),this.x<this.r&&(this.x=this.r),this.x>bound[0]-this.r&&(this.x=bound[0]-this.r),this.y<this.r&&(this.y=this.r),this.y>bound[1]-this.r&&(this.y=bound[1]-this.r),this.still=this.to(m[0],m[1])<this.r+dist;let e=!1;for(let f=0;f<a.length;f++)if(this.i!=f){let g=b(this.i,f)/2;if(this.still){let b=d(this.i,m[0],m[1]),c=this.to(m[0],m[1]);a[this.i].x+=b[0]*(this.r-c+dist),a[this.i].y+=b[1]*(this.r-c+dist)}if(!1!=g&&!pause){e=!0;let b=c(this.i,f);this.still?(a[f].x+=g*(0-b[0]),a[f].y+=g*(0-b[1])):(a[this.i].x+=g*b[0],a[this.i].y+=g*b[1]),a[f].x+=g*(0-b[0]),a[f].y+=g*(0-b[1])}}if(e)return e}}a(default_density),e()}</script></body>
+</html>
